@@ -12,8 +12,10 @@ function handleFileInput(event) {
         enableDownloadLink(xmltvOutputData);
       })
       .catch(error => {
-        console.error("Error reading Excel file:", error);
+        console.error("Error converting Excel to XML:", error);
       });
+  } else {
+    console.error("No file selected.");
   }
 }
 
@@ -38,26 +40,42 @@ function convertToXMLTV(data) {
   let xmltvData = `<?xml version="1.0" encoding="UTF-8"?>
 <tv generator-info-name="OTTera">
   <channel id="zee_zb_11">
-    <display-name lang="en"> Channel Name</display-name>
-    <icon src= "URL for channel logo"/>
+    <display-name lang="en">Zee Cinema</display-name>
+    <icon src= "https://img.static-ottera.com/prod/zee/linear_channel/logo/960x960/e7a6f6bb-zee_cinema_hd_gradient_logo-01.jpg"/>
   </channel>`;
   // Skip the header row (starting from 1st row)
   for (let i = 1; i < data.length; i++) {
     const startTime = parseInt(data[i][0]);
     const endTime = parseInt(data[i][1]);
-    const assetID = data[i][2];
-    const title = data[i][3]; // corrected from data [i][5] to data[i][5]
-    const  description = data[i][4];
+    const title = data[i][2]; 
+    const description = data[i][3];
     xmltvData += `<programme start="${startTime}" stop="${endTime}" channel="zee_zb_11">\n`;
-    xmltvData += `<title lang="en">${title}</title>\n`; // removed unnecessary quotes around title
-    xmltvData += `desc lang="en">${description}</desc>\n`;
-    xmltvData += `<category lang="en">Series</category> \n`;
+    xmltvData += `<title lang="en">${title}</title>\n`;
+    xmltvData += `<desc lang="en">${escapeXml(description)}</desc>\n`;
+    xmltvData += `<category lang="en">Movies</category> \n`;
     xmltvData += `<icon src="" width="3840" height="2160"/>\n`;
-    xmltvData += `<episode-num system="assetID">${assetID}</episode-num>\n`;
+    xmltvData += `<episode-num system="assetID">zeezb1000009999</episode-num>\n`;
     xmltvData += `<video>\n<aspect/>\n<quality/>\n</video>\n</programme>\n`;
-  }
 
-  xmltvData += '</tv>';
+    function escapeXml(unsafe) {
+        return unsafe.replace(/[<>&'"]/g, function (c) {
+          switch (c) {
+            case '<':
+              return '&lt;';
+            case '>':
+              return '&gt;';
+            case '&':
+              return '&amp;';
+            case '\'':
+              return '&apos;';
+            case '"':
+              return '&quot;';
+          }
+        });
+      }
+      
+  }
+  xmltvData += `</tv>`;
   return xmltvData;
 }
 
