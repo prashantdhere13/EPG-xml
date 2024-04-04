@@ -38,8 +38,8 @@ function convertToXMLTV(data) {
   let xmltvData = `<?xml version="1.0" encoding="UTF-8"?>
 <tv generator-info-name="OTTera">
   <channel id="zee_zb_11">
-    <display-name lang="en">Zee Cinema</display-name>
-    <icon src= "https://img.static-ottera.com/prod/zee/linear_channel/logo/960x960/e7a6f6bb-zee_cinema_hd_gradient_logo-01.jpg"/>
+    <display-name lang="en"> Channel Name</display-name>
+    <icon src= "URL for channel logo"/>
   </channel>`;
   // Skip the header row (starting from 1st row)
   for (let i = 1; i < data.length; i++) {
